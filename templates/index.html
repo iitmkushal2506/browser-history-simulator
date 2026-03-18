@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser History Simulator</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #fff;
+        }
+
+        .container {
+            width: 900px;
+            margin: 40px auto;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .current {
+            background: #0ea5e9;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .visit { background: #22c55e; color: white; }
+        .visit:hover { background: #16a34a; }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .controls button { width: 30%; }
+
+        .back { background: #f59e0b; }
+        .next { background: #3b82f6; }
+        .reset { background: #ef4444; }
+
+        .history {
+            display: flex;
+            gap: 20px;
+        }
+
+        .box {
+            flex: 1;
+            background: rgba(255,255,255,0.08);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .box h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .item {
+            background: rgba(255,255,255,0.1);
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .empty {
+            text-align: center;
+            opacity: 0.6;
+        }
+
+        /* ABOUT */
+        .about {
+            width: 900px;
+            margin: 30px auto;
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 20px;
+            line-height: 1.7;
+        }
+
+        .about h2 {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .about p {
+            margin-bottom: 10px;
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .about ul {
+            margin-left: 20px;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background: rgba(0,0,0,0.5);
+        }
+
+        footer p:last-child {
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 900px) {
+
+            .container, .about {
+                width: 90%;
+                margin: 20px auto;
+                padding: 20px;
+            }
+
+            .history {
+                flex-direction: column;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .controls button {
+                width: 100%;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .input-group input,
+            .input-group button {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .current {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .container, .about {
+                padding: 15px;
+                border-radius: 15px;
+            }
+
+            .item {
+                font-size: 12px;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            .about p, .about li {
+                font-size: 13px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- MAIN APP -->
+<div class="container">
+
+    <h1>🌐 Browser History Simulator</h1>
+
+    <div class="current">
+        Current Page:
+        {{ current if current else "NEW SESSION" }}
+    </div>
+
+    <form method="POST" class="input-group">
+        <input type="text" name="url" placeholder="Enter URL (https://example.com)" required>
+        <button class="visit" name="action" value="visit">Visit</button>
+    </form>
+
+    <form method="POST" class="controls">
+        <button class="back" name="action" value="back" {% if not back_stack %}disabled{% endif %}>⬅ BACK</button>
+        <button class="next" name="action" value="next" {% if not forward_stack %}disabled{% endif %}>NEXT ➡</button>
+        <button class="reset" name="action" value="reset">RESET</button>
+    </form>
+
+    <div class="history">
+        <div class="box">
+            <h3>⬅ Back Stack</h3>
+            {% for item in back_stack %}
+                <div class="item">{{ item }}</div>
+            {% else %}
+                <div class="empty">No history</div>
+            {% endfor %}
+        </div>
+
+        <div class="box">
+            <h3>➡ Forward Stack</h3>
+            {% for item in forward_stack %}
+                <div class="item">{{ item }}</div>
+            {% else %}
+                <div class="empty">No forward pages</div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<!-- ABOUT -->
+<div class="about">
+
+    <h2>📘 About This Project</h2>
+
+    <p>
+        This project simulates a web browser's history management system using Stack Data Structure.
+        It demonstrates how modern browsers implement navigation like BACK and NEXT efficiently.
+    </p>
+
+    <p><b>🔧 Technologies Used:</b></p>
+    <ul>
+        <li>Flask (Python) – backend logic</li>
+        <li>HTML, CSS – UI design</li>
+        <li>Stack (LIFO) – history management</li>
+    </ul>
+
+    <p><b>⚙️ Working:</b></p>
+    <ul>
+        <li>Back Stack → stores visited pages</li>
+        <li>Forward Stack → stores next pages</li>
+        <li>New visit clears forward stack</li>
+    </ul>
+
+    <p><b>🎯 Purpose:</b></p>
+    <ul>
+        <li>Understand Stack Data Structure practically</li>
+        <li>Simulate real-world browser behavior</li>
+        <li>Apply DSA concepts in real applications</li>
+    </ul>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <p>Made by Kushal Batra 🚀</p>
+    <p>My GitHub: https://github.com/iitmkushal2506</p>
+</footer>
+
+</body>
+</html>
