@@ -55,6 +55,7 @@
             padding: 12px;
             border-radius: 8px;
             border: none;
+            outline: none;
         }
 
         button {
@@ -80,6 +81,10 @@
         .back { background: #f59e0b; }
         .next { background: #3b82f6; }
         .reset { background: #ef4444; }
+
+        .back:hover { background: #d97706; }
+        .next:hover { background: #2563eb; }
+        .reset:hover { background: #dc2626; }
 
         .history {
             display: flex;
@@ -145,9 +150,14 @@
             background: rgba(0,0,0,0.5);
         }
 
-        footer p:last-child {
+        footer a {
             color: #0ea5e9;
+            text-decoration: none;
             font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
         }
 
         /* ================= RESPONSIVE ================= */
@@ -299,7 +309,12 @@
 <!-- FOOTER -->
 <footer>
     <p>Made by Kushal Batra 🚀</p>
-    <p>My GitHub: https://github.com/iitmkushal2506</p>
+    <p>
+        🔗 GitHub:
+        <a href="https://github.com/iitmkushal2506/browser-history-simulator" target="_blank">
+            https://github.com/iitmkushal2506/browser-history-simulator
+        </a>
+    </p>
 </footer>
 
 </body>
