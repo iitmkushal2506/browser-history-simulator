@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+# Stacks
 back_stack = []
 forward_stack = []
 current = None
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -37,10 +39,16 @@ def index():
             forward_stack.clear()
             current = None
 
-    return render_template("index.html",
-                           current=current,
-                           back_stack=back_stack,
-                           forward_stack=forward_stack)
+    return render_template(
+        "index.html",
+        current=current,
+        back_stack=back_stack,
+        forward_stack=forward_stack
+    )
 
+
+# ✅ Important for Render
 if __name__ == "__main__":
-    app.run(debug=True)
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
